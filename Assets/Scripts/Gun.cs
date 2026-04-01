@@ -8,6 +8,8 @@ public class Gun : MonoBehaviour
         set{cameraUsed = value;}
     }
     [SerializeField]
+    private Animator animator;
+    [SerializeField]
     private Transform bulletPivot;
     [SerializeField]
     private InstantiatePoolObjects bulletpool;
@@ -27,8 +29,9 @@ public class Gun : MonoBehaviour
     }
     Vector3 direction = (targetPoint - transform.position).normalized;
     bulletPivot.forward = direction;
-    bulletpool.InstantiateObject(bulletPivot.position);
+    bulletpool.InstantiateObject(bulletPivot);
     Transform bullet = bulletpool.GetCurrentObject().transform;
     bullet.transform.LookAt(targetPoint);
+    animator.Play("Shoot",0,0f);
     }
 }
