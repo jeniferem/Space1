@@ -33,5 +33,6 @@ public class Gun : MonoBehaviour
     Transform bullet = bulletpool.GetCurrentObject().transform;
     bullet.transform.LookAt(targetPoint);
     animator.Play("Shoot",0,0f);
+    SoundManager.instance.Play("PUM");
     }
 }

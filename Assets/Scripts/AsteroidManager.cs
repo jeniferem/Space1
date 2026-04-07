@@ -16,7 +16,7 @@ public class AsteroidManager : MonoBehaviour
     private void Start()
     {
         float initialDelay = 0f;
-        for (int i = 0; 1 < numberOfAsteroids; i++)
+        for (int i = 0; i < numberOfAsteroids; i++)
         {
             Invoke("SpawnAsteroid", initialDelay);
             initialDelay += spawnInsterval;

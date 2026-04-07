@@ -13,6 +13,9 @@ public class Asteroid : MonoBehaviour
     [SerializeField]
     private float speed =5f;
     [SerializeField]
+    private float asteroidDanager = 10f;
+    private float distanceToTarget = 2f;
+    [SerializeField]
     private UnityEvent<Transform> onAsteroidDestroyed;
     public UnityEvent<Transform> OnAsteroidDestroyed => onAsteroidDestroyed;
     private Collider asteroidCollider;
@@ -24,6 +27,7 @@ public class Asteroid : MonoBehaviour
     }
     private void OnEnable()
     {
+        animator.Play("Idle", 0, 0f);
         asteroidCollider.enabled = true;
         health.InitializeHealth();
     }
@@ -41,6 +45,11 @@ public class Asteroid : MonoBehaviour
         {
             Vector3 direction = (target.position = transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
+            if(Vector3.Distance(transform.position, target.position)<=distanceToTarget)
+            {
+                target.GetComponent<Health>().TakeDamage(asteroidDanager);
+                DestroyAsteroid();
+            }
         }
     }
         public void DestroyAsteroid()
