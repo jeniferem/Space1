@@ -1,20 +1,35 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements.Experimental;
 
 public class Asteroid : MonoBehaviour
 {
     private Animator animator;
     private Transform target;
+    private Health health;
     [SerializeField]
-    private float speed = 5f;
+    private float bulletDamaga= 25f;
+    [SerializeField]
+    private float speed =5f;
     [SerializeField]
     private UnityEvent<Transform> onAsteroidDestroyed;
-    public UnityEvent<Transform> OnAsteroidDestroyed => OnAsteroidDestroyed;
+    public UnityEvent<Transform> OnAsteroidDestroyed => onAsteroidDestroyed;
+    private Collider asteroidCollider;
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        health = GetComponent<Health>();
+        asteroidCollider = GetComponent<Collider>();
+    }
+    private void OnEnable()
+    {
+        asteroidCollider.enabled = true;
+        health.InitializeHealth();
+    }
+     public void OnPointerClick()
+    {
+        health.TakeDamage(bulletDamaga);
     }
     public void SetTarget(Transform target)
     {
@@ -30,7 +45,9 @@ public class Asteroid : MonoBehaviour
     }
         public void DestroyAsteroid()
     {
-        animator.Play("Destroy", 0, 0f);
+        target = null;
+        asteroidCollider.enabled = false;
+        animator.Play("Explode", 0, 0f);
         onAsteroidDestroyed?.Invoke(transform);
         StartCoroutine(DestroyCoroutine());
     }
