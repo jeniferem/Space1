@@ -14,6 +14,7 @@ public class Asteroid : MonoBehaviour
     private float speed =5f;
     [SerializeField]
     private float asteroidDanager = 10f;
+    [SerializeField]
     private float distanceToTarget = 2f;
     [SerializeField]
     private UnityEvent<Transform> onAsteroidDestroyed;
@@ -43,9 +44,10 @@ public class Asteroid : MonoBehaviour
     {
         if (target != null)
         {
-            Vector3 direction = (target.position = transform.position).normalized;
+            Vector3 direction = (target.position - transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
-            if(Vector3.Distance(transform.position, target.position)<=distanceToTarget)
+            transform.LookAt(target);
+            if(Vector3.Distance(transform.position, target.position) <= distanceToTarget)
             {
                 target.GetComponent<Health>().TakeDamage(asteroidDanager);
                 DestroyAsteroid();
@@ -66,7 +68,7 @@ public class Asteroid : MonoBehaviour
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
         gameObject.SetActive(false);
     }
-    private void Osable()
+    private void OnDisable()
     {
         target = null;  
         onAsteroidDestroyed.RemoveAllListeners();
