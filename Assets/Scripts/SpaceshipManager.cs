@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
-public class Spaceship : MonoBehaviour
+public class SpaceshipManager : MonoBehaviour
 {
     [SerializeField]
-    private Handheld playerHealth;
+    private Health playerHealth;
     [SerializeField]
     private int numberOfSpaceships = 5;
     [SerializeField]
@@ -13,12 +13,31 @@ public class Spaceship : MonoBehaviour
     [SerializeField]
     private InstantiatePoolObjects bulletPool;
     [SerializeField]
-    private float timeToSpawn =15f;
+    private UnityEvent onInstantiateShip;
     [SerializeField]
-    private UnityEvent<Transform> onShipDestoyed;
+    private float timeToSpawn = 15f;
+    [SerializeField]
+    private UnityEvent<Transform> onShipDestroyed;
+    [SerializeField]
+    private UnityEvent onAllShipsDestroyed;
+    private int destroyedSpaceships = 0;
     public void OnDestroyShip(Transform transform)
     {
-        onShipDestoyed.Invoke(transform);
+        destroyedSpaceships++;
+        onShipDestroyed.Invoke(transform);
+        if (destroyedSpaceships >= numberOfSpaceships)
+        {
+            onAllShipsDestroyed?.Invoke();
+        }
+    }
+     public void StartShips()
+    {
+        StartCoroutine(SpawnSpaceships());
+    }
+    public void StopShips()
+    {
+        StopAllCoroutines();
+        spaceshipPool.DeactivateAllObjects();
     }
     private void Start()
     {
@@ -28,15 +47,15 @@ public class Spaceship : MonoBehaviour
     {
         numberOfSpaceships--;
         yield return new WaitForSeconds(timeToSpawn);
+        onInstantiateShip?.Invoke();
         spaceshipPool.InstantiateObject(transform);
         EnemySpaceship spaceship = spaceshipPool.GetCurrentObject().GetComponent<EnemySpaceship>();
         spaceship.TargetHealth = playerHealth;
         spaceship.BulletPool = bulletPool;
         spaceship.OnDestroyed.AddListener(OnDestroyShip);
-        if (numberOfSpaceships >0)
+        if (numberOfSpaceships > 0)
         {
             StartCoroutine(SpawnSpaceships());
         }
     }
-
 }
