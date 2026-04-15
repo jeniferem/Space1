@@ -38,7 +38,7 @@ public class AsteroidManager : MonoBehaviour
     private void SpawnAsteroid()
     {
         if(!isActive)return;
-        Vector3 randomDistanceFromTarget = Random.onUnitSphere * 200f;
+        Vector3 randomDistanceFromTarget = Random.onUnitSphere * 90f;
         randomDistanceFromTarget.y = Mathf.Abs(randomDistanceFromTarget.y) + 5f;
         Vector3 spawnPosition = target.position + randomDistanceFromTarget;
         asteroidPool.InstantiateObject(spawnPosition);
